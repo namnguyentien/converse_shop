@@ -1,0 +1,168 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+.slider{
+    padding: 40px 30px;
+}
+
+.slider-image .item{
+    height: 400px;
+}
+
+.slider-image img{
+    height: 100%;
+}
+
+.section-content{
+    padding: 35px 0;
+}
+
+.section-image-top{
+    margin: 15px auto;
+    width: 50%;
+}
+
+.section-item{
+    position: relative;
+    padding: 10px 0;
+}
+
+.text-inner{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #000;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.text-inner:hover{
+    opacity: 1;
+}
+
+.text-inner a{
+    padding: 10px 20px;
+    color: #fff;
+    background-color: #000;
+    font-weight: 700;
+    transform: scale(0);
+    transition: transform 0.3s;
+}
+.text-inner:hover a{
+    transform: scale(1);
+}
+
+.product-title{
+    display: flex;
+    justify-content: center;
+    border-bottom: solid 1px #000 !important;
+    margin-bottom: 3em;
+}
+
+.product-title h3{
+    font-size: 1.25em;
+    font-weight: 700;
+    font-family: "Roboto", sans-serif;
+    color: #1c1c1c;
+}   
+
+.nav-link{
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: "Roboto", sans-serif;
+    font-size: 1em;
+    border: none !important;
+    background-color: transparent;
+}
+.nav-item .active{
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+
+.tab-menu{
+    padding: 20px 0;
+}
+
+
+
+
+.product{
+    padding: 30px 0;
+}
+
+.list-product{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 15px;
+}
+
+.view-all{
+    text-align: center;
+    margin-top: 20px;
+}
+.view-all a{
+    color: rgba(102,102,102,0.85) ;
+    transition: border .3s, background .3s,color .3s;
+    border: 2px solid currentColor;
+    padding: 0.6em 1.2em;
+    font-weight: 700;
+}
+.view-all a:hover{
+    background-color: #000;
+    color: #fff;
+}
+
+.home-banner{
+    padding: 30px 0;
+}
+
+.home-banner .container{
+    background-image: url(../image/banner-1.jpg) ;
+    height: 450px;
+    background-position: center;
+    background-attachment: scroll;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-banner .text-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.home-banner h5,.home-banner h1{
+    color: #fff;
+}
+.home-banner h1 span{
+    color: yellow;
+}
+.home-banner-button{
+    margin: 1em 0;
+}
+.home-banner-button a{
+    color: #f1f1f1;
+    background-color: transparent;
+    transition: border .3s, background .3s,color .3s;
+    border: 2px solid currentColor;
+    padding: 0.6em 1.2em;
+    font-weight: 700;
+}
+.home-banner-button a:hover{    
+    background-color: #000;
+    border-color: #000;
+}
+
+
+

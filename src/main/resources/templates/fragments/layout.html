@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <th:block th:fragment="header">
+    <header >
+        <div class="header-top">
+            <div class="container">
+                <div class="header-main">
+                    <div class="flex-left">
+                        <ul class="account">
+                            <li th:if = "${session.authentication == null}" class="account-item"><button onclick="loginModalForm(this)"><span>Đăng nhập / Đăng ký</span></button></li>
+                            <li id="account-setting"  th:if ="${session.authentication != null}">
+                                <a href="#" class="btn btn-account dropdown-toggle" onclick="accountChange()">Xin chào <span th:text = "${session.authentication.principal.user.username}"></span></a>
+                                <div class="account-dropdown">
+                                    <ul>
+                                        <li><a href="">Thông tin tài khoản</a></li>
+                                        <li><a href="">Đơn Hàng</a></li>
+                                        <li><a th:href="@{/api/logout}">Đăng xuất</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="logo">
+                        <a th:href="@{/}">
+                            <img th:src="@{/image/logo-mona.png}" alt="">
+                        </a>
+                    </div>
+                    <div class="flex-right">
+                        <ul class="header-nav">
+                            <li class="header-search">
+                                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                            </li>
+                            <li class="header-divider"></li>
+                            <li class="header-cart">
+                                <a th:href="@{/cart}" title="Giỏ Hàng" class="cart-item">
+                                    <span class="cart-icon"><strong>0</strong></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="container">
+                <div class="header-bottom-nav">
+                    <ul class="header-bottom-item">
+                        <li class="bottom-nav-item current-item"><a th:href="@{/}">Trang chủ</a></li>
+                        <li class="bottom-nav-item"><a href="">Giới thiệu</a></li>
+                        <li class="bottom-nav-item"><a th:href="@{/product/category/2}">Nam</a></li>
+                        <li class="bottom-nav-item"><a th:href="@{/product/category/1}">Nữ</a></li>
+                        <li class="bottom-nav-item"><a th:href="@{/product/category/3}">Trẻ em</a></li>
+                        <li class="bottom-nav-item"><a th:href="@{/product/category/4}">Phụ kiện khác</a></li>
+                        <li class="bottom-nav-item"><a href="">Tin tức</a></li>
+                        <li class="bottom-nav-item"><a href="">Liên hệ</a></li>
+                        <li class="account-setting"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    </th:block>
+
+
+    <th:block th:fragment = "footer">
+        <footer>
+            <div class="container">
+                <div class="footer-top">
+                    <div class="col large-3">
+                        <div class="col-inner">
+                            <h3>GIỚI THIỆU</h3>
+                            <div class="divier"></div>
+                            <div class="icon-box">
+                                <p>
+                                    Chào mừng bạn đến với ngôi nhà Converse! Tại đây, mỗi một dòng chữ, mỗi chi tiết và hình ảnh đều là những bằng chứng mang dấu ấn lịch sử Converse 100 năm, và đang không ngừng phát triển lớn mạnh.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col large-3">
+                        <div class="col-inner">
+                            <h3>ĐỊA CHỈ</h3>
+                            <div class="divier"></div>
+                            <div class="icon-box">
+                                <span class="icon-box-image"><i class="fa-solid fa-location-dot"></i></span>
+                                <span class="icon-box-text">319 C16 Lý Thường Kiệt, Phường 15, Quận 11, Tp.HCM</span>
+                            </div>
+                            <div class="icon-box">
+                                <span class="icon-box-image"><i class="fa-solid fa-phone"></i></span>
+                                <span class="icon-box-text">076 922 0162</span>
+                            </div>
+                            <div class="icon-box">
+                                <span class="icon-box-image"><i class="fa-regular fa-envelope"></i></span>
+                                <span class="icon-box-text">
+                                    <a href="mailto:demonhunterg@gmail.com">demonhunterg@gmail.com</a>
+                                </span>
+                            </div>
+                            <div class="icon-box">
+                                <span class="icon-box-image"><i class="fa-brands fa-skype"></i></span>
+                                <span class="icon-box-text">
+                                    <a href="skype:demonhunterp">demonhunterp</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col large-3">
+                        <div class="col-inner">
+                            <h3>MENU</h3>
+                            <div class="divier"></div>
+                            <div class="icon-box">
+                                <ul class="footer-menu">
+                                    <li class="footer-menu-item"><a href="">Trang chủ</a></li>
+                                    <li class="footer-menu-item"><a href="">Cửa hàng</a></li>
+                                    <li class="footer-menu-item"><a href="">Liên hệ</a></li>
+                                    <li class="footer-menu-item"><a href="">Giới thiệu</a></li>
+                                    <li class="footer-menu-item"><a href="">Tin tức</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col large-3">
+                        <div class="col-inner">
+                            <div class="social-icons">
+                                <h3>MẠNG XÃ HỘI</h3>
+                                <div class="divier"></div>
+                                <div class="icon-box">
+                                    <a href=""><i class="fa-brands fa-facebook"></i></a>
+                                    <a href=""><i class="fa-brands fa-instagram"></i></a>
+                                    <a href=""><i class="fa-brands fa-twitter"></i></a>
+                                    <a href=""><i class="fa-brands fa-pinterest"></i></a>
+                                    <a href=""><i class="fa-solid fa-rss"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="footer-bottom">
+                    <div class="col large-3">
+                        <div class="col-inner">
+                            <h3>ĐĂNG KÝ NHẬN THÔNG TIN</h3>
+                        </div>
+                    </div>
+                    <div class="col large-4">
+                        <div class="col-inner">
+                            <form action="">
+                                <input type="email" class ="footer-email">
+                                <input type="submit" class="footer-submit" value="ĐĂNG KÝ">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </th:block>
+
+    <th:block th:fragment ="login-modal">
+        <div class="modal fade " id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                    <div class="account-container">
+                        <ul class="nav nav-pills mb-3" role="tablist">
+                            <li class="nav-item">
+                              <a class="nav-link active" data-toggle="pill" href="#login-form" role="tab" >Đăng nhập</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" data-toggle="pill" href="#register-form" role="tab">Đăng ký</a>
+                            </li>
+                          </ul>
+                          <div class="tab-content">
+                            <div class="tab-pane fade show active" id="login-form" role="tabpanel" aria-labelledby="login-form-tab">
+                                <div class="login-form">
+                                    <div class="form-group">
+                                      <label for="">Tên Đăng nhập *</label>
+                                      <input type="text" id="login-name" class="form-control" >
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Mật khẩu *</label>
+                                        <input type="password"  id="login-password" class="form-control" >
+                                    </div>
+                                    <div class="submit-button">
+                                        <button type="submit" class="btn btn-danger login-button">Đăng nhập</button>
+                                    </div>
+                                    <div class="lost-password">
+                                        <a href="">Quên mật khẩu</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="register-form" role="tabpanel" aria-labelledby="register-form-tab">
+                                <div class="register-form">
+                                    <div class="form-group">
+                                      <label for="">Tên Đăng nhập *</label>
+                                      <input type="text" id = "register-name" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Email *</label>
+                                        <input type="text" id = "register-email" class="form-control">
+                                      </div>
+                                    <div class="form-group">
+                                        <label for="">Mật khẩu *</label>
+                                        <input type="password" name="" id="register-password" class="form-control">
+                                    </div>
+                                    <div class="submit-button">
+                                        <button type="button" class="btn btn-danger register-button">Đăng Ký</button>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </th:block>
+
+
+    <th:block th:fragment = "product-modal">
+        <div class="modal fade" id="product-detail" >
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                    <div class="product-gallery">
+                        <div class="main-image">
+                            <div>
+                                <img src="" alt="">
+                            </div>
+                        </div>
+                        <div class="sub-image">
+
+                        </div>
+                    </div>
+                    <div class="product-detail-content">
+                        <div class="product-id" hidden></div>
+                        <h1 class="product-name"></h1>
+                        <div class="divider-small"></div>
+                        <div class="product-price"></div>
+                        <div class="km-hot">
+                            <div class="box-km">
+                                <h2 class="title-km">
+                                    <i class="fa-solid fa-gift"></i>
+                                    <span>Khuyến mãi</span>
+                                </h2>
+                                <div class="box-promotion">
+                                    <ul>
+                                        <li><meta>Tặng thêm <strong><em>Phiếu mua hàng 200.000đ</em></strong> (áp dụng mua pin dự phòng Umetravel, Innostyle)</li>
+                                        <li><em><strong>Trả góp</strong></em> 0% lãi suất</li>
+                                        <li>Chiết khấu member ship</li>
+                                        <li><em><strong>Giảm giá thêm 100.000đ</strong></em> khi mua kèm Airpods Pro (VN/A)</li>
+                                        <li><em><strong>Giảm thêm 200.000đ</strong></em> khi mua kèm Macbook Air M1 8GB/256GB (VN/A)</li></ul>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="input-number-product">
+                                <span>Số lượng : &nbsp
+                                    <input type="button" class="minus-button" value="-">
+                                    <input type="number" class="input-number" >
+                                    <input type="button" class="plus-button" value="+">
+                                </span>
+                            </div>
+                        <div class="add-to-cart">
+                            <button>Thêm vào giỏ</button>
+                        </div>
+                        <div class="product-category"><span>Nhãn : </span> <a href=""></a></div>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+          
+    </th:block>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> 
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script th:src = "@{/js/main.js}"></script>
+    <script th:inline ="javascript">
+        function accountChange(){
+            $('.account-dropdown').toggleClass('account-hidden');
+        } 
+    </script>
+</body>
+</html>

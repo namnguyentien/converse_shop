@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link th:replace="fragments/admin-layout::link" />
+
+</head>
+<body>
+    <div th:replace = "fragments/admin-layout::top-bar"></div>
+    <div th:replace = "fragments/admin-layout::left-sidebar"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="row-page-title">
+                <ul class="list-style-none">
+                    <li class="home-link"><a th:href="@{/admin}">Home</a></li>
+                    <li class="title">Đơn hàng đã đặt</li>
+                </ul>
+                <h3>Đơn hàng</h3>
+            </div>
+            <div class="table-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tên khách hàng</th>
+                                <th>Email</th>
+                                <th>Quốc gia</th>
+                                <th>Địa chỉ</th>
+                                <th>Số điện thoại</th>
+                                <th>Tổng giá tiền</th>
+                                <th>Ngày đặt hàng</th>
+                                <th>Ngày nhận hàng</th>
+                                <th>Công cụ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each = "order : ${listOrder}">
+                                <td th:text = "${order.name}"></td>
+                                <td th:text = "${order.email}"></td>
+                                <td th:text = "${order.country}"></td>
+                                <td th:text = "${order.address}"></td>
+                                <td th:text = "${order.phone}"></td>
+                                <td th:text = "${order.totalPrices}"></td>
+                                <td th:text = "${order.requiredDate}"></td>
+                                <td th:if = "${order.shippedDate != null}" th:text = "${order.shippedDate}"></td>
+                                <td th:if ="${order.shippedDate == null}"  th:data-id = "${order.id}" class="shippedDate">Đang sử lý</td>
+                                <td th:if = "${order.shippedDate == null}"><button class="btn btn-success btn-update-ship" th:data-id = "${order.id}">Giao hàng</button></td>
+                                <td th:if = "${order.shippedDate != null}"><button class="btn btn-danger btn-delete-order" th:data-id = "${order.id}">Xóa</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div th:replace="fragments/admin-layout::script"></div>
+    <script>
+        $('.btn-update-ship').on("click",function(){
+            let id = $(this).data('id');
+            
+            $.ajax({
+                url: '/admin/order/' + id,
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                success: function(data){
+                    $('.shippedDate[data-id= '+id+']').text(data.shippedDate);
+                    toastr.success("Giao hàng thành công");
+                }
+            })
+        })
+    </script>
+</body>
+</html>

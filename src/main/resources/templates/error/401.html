@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>401</title>
+    <link th:replace = "fragments/layout::link">
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+
+</head>
+<body>
+    <header th:replace="fragments/layout::header"></header>
+
+    <div class="error-container">
+        <div class="container">
+            <div class="error-response">
+                <img th:src="@{/image/401.jpg}" alt="">
+                <div>
+                    <p>Bạn chưa đăng nhập</p>
+                    <a th:href="@{/}">Quay về trang chủ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/layout::login-modal"></div>
+    <footer th:replace="fragments/layout::footer"></footer>
+
+    <div th:replace = "fragments/layout::script"></div>
+</body>
+</html>

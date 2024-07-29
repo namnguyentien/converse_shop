@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link th:replace = "fragments/layout::link">
+    <link rel="stylesheet" th:href="@{/css/list-product.css}">
+</head>
+<body>
+
+    <header th:replace="fragments/layout::header"></header>
+
+    <div class="page-title">
+        <div class="container">
+            <a th:href="@{/}">Trang chủ</a>
+            <span class="divider">/</span>
+            <span>Category</span>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="container">
+            <div class="shop-sidebar">
+                <aside class="price-range" aria-label="price-range">
+                    <div class="sidebar-title">
+                        <h5>Lọc theo giá</h5>    
+                    </div>
+                    <div class="price-range-input">
+                        <div class="form-group">
+                          <label for="">Từ giá</label>
+                          <input type="text" name="" id="" class="form-control">
+                          <label for="">Đến giá</label>
+                          <input type="text" name="" id="" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary price-range-button">Lọc theo giá</button>
+                    </div>
+                </aside>
+                <aside class="product-side" aria-label="product-side">
+                    <div class="sidebar-title">
+                        <h5>Sản phẩm</h5>
+                    </div>
+                    <ul class="side-product-list">
+                        <li th:each = "product : ${newProductList}">
+                            <a href="">
+                                <img th:src="*{'data:image/jpeg;base64,' + {product.images[0].data}}" alt="">
+                            </a>
+                            <div class="side-product-content">
+                                <a href="">
+                                    <div class="side-product-name" th:text = "${product.name}"></div>
+                                    <div class="side-product-price" th:text = "${product.price} + ' ₫'"></div>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </aside>
+                <aside class="new-post" aria-label="new-post">
+                    <div class="sidebar-title">
+                        <h5>Bài viết mới nhất</h5>
+                    </div>
+                    <div class="new-post-list">
+
+                    </div>
+                </aside>
+            </div>
+            <div class="shop-container">
+                <div class="list-product">
+                </div>
+                <ul class="pagination">
+                    <li class="page-item" th:each = "i : ${#numbers.sequence(1,totalPages)}">
+                        <a class="page-link"  onclick="getPage(this)">[[${i}]]</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div th:each = "product : ${newProductList}">
+        <div th:text = "${product.category.id}" hidden id="category-id"></div>
+    </div>
+
+    <div th:replace="fragments/layout::login-modal"></div>
+    <div th:replace = "fragments/layout::product-modal"></div>
+
+
+
+    
+    <footer th:replace="fragments/layout::footer"></footer>
+
+    <div th:replace = "fragments/layout::script"></div>
+    <script>
+        let id = $('#category-id').text();
+        let pageNo = 0;
+        function getListProduct(pageNo){
+            $.ajax({
+                url: '/api/product/pageByCategoryId/' + id,
+                data:{
+                    pageNo: pageNo,
+                    pageSize : 12
+                },  
+                type: 'GET',
+                success: function(data){
+                    listProduct = data.content;
+                    showProduct(data.content);
+
+                }
+            })
+        }
+        $(document).ready(function(){
+            getListProduct(pageNo);
+        })
+
+        function showProduct(data){
+            $('.list-product').children().remove();
+            let html =``;
+            $.each(data,function(i,res){
+                $.each(res.images,function(i,y){
+                html += `<div><img src="data:image/jpeg;base64,${y.data}" data-id = "${y.id}" /></div>`
+            })
+            let pid = res.id;
+                $('.list-product').append(`
+                    <div class = "product-block">
+                        <div class = "product-image" data-id = "${res.id}">
+                            ${html}
+                        </div>
+                        <div class="product-content">
+                          <div class="product-id"  data-id = "${res.id}" hidden name = "product-id"></div>
+                          <div class="product-name"><a href="#">${res.name}</a></div>
+                          <div class="product-price">${res.price} <span>₫</span></div>
+                          <div class="add-to-cart-button"><button onclick = "productDetail(this)" data-id = "${res.id}">Thêm vào giỏ</button></div>
+                        </div>
+                    </div>
+                `)
+                html = ``;
+                $('.product-image[data-id = '+ pid +'] div img:not(:first)').hide();
+            })
+
+        }
+        function getPage(btn){
+            let pageNo = $(btn).text();
+            getListProduct(pageNo-1);
+        }
+    </script>
+</body>
+</html>

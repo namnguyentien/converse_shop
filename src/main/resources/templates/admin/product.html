@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản Phẩm</title>
+    <link th:replace="fragments/admin-layout::link" />
+</head>
+<body>
+    <div th:replace = "fragments/admin-layout::top-bar"></div>
+    <div th:replace = "fragments/admin-layout::left-sidebar"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="row-page-title">
+                <ul class="list-style-none">
+                    <li class="home-link"><a th:href="@{/admin}">Home</a></li>
+                    <li class="title">Sản phẩm</li>
+                </ul>
+                <h3>Sản phẩm</h3>
+            </div>
+
+            <div class="table-body">
+                <div class="create-product-button"><button class="btn btn-success" >Thêm sản phẩm</button></div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Giá tiền</th>
+                                <th>Số lượng</th>
+                                <th>Nội Dung</th>
+                                <th>Ảnh</th>
+                                <th>Trạng thái</th>
+                                <th>Công cụ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list-product">
+                        </tbody>
+                    </table>
+
+                    <ul class="pagination">
+                        <li class="page-item" th:each = "i : ${#numbers.sequence(1,totalPages)}">
+                            <a class="page-link"  onclick="getPage(this)">[[${i}]]</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Input Product Modal-->
+    <div class="modal fade" id="input-product-modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="create-product-title">Thêm mới sản phẩm</h5>
+              <h5 class="modal-title" id="update-product-title">Cập nhật sản phẩm</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+
+                <input type="text" id="input-product-id" hidden>
+
+                <div class="form-group">
+                    <label for="">Tên Sản Phẩm</label>
+                    <input type="text" name="" id="input-product-name" class="form-control">
+                    <div class="invalid-feedback" id="invalid-feedback-name">Tên sản phẩm từ 0-300 kí tự</div>
+                </div>
+                <div class="form-group">
+                  <label for="">Danh mục sản phẩm</label>
+                  <br>
+                  <select id="product-category">
+                    <option th:value="null">-SELECT-</option>
+                    <option th:each = "category : ${listCategory}" th:value="${category.id}" th:text = "${category.name}" id="input-product-category"></option>
+                  </select>
+                  <div class="invalid-feedback" id="invalid-feedback-category">Danh mục sản phẩm trống</div>
+                </div>
+                <div class="form-group">
+                    <label for="">Giá bán</label>
+                    <input type="text" name="" id="input-product-price" class="form-control">
+                    <div class="invalid-feedback" id="invalid-feedback-price">Giá sản phẩm từ 1000đ đến 100000000000đ</div>
+                </div>
+                <div class="form-group">
+                    <label for="">Số lượng</label>
+                    <input type="text" name="" id="input-product-quantity" class="form-control">
+                    <div class="invalid-feedback" id="invalid-feedback-quantity">Số lượng trống</div>
+                </div>
+                <div class="form-group">
+                    <label for="">Mô tả</label>
+                    <textarea type="text" name="" id="input-product-description" class="form-control" rows="3"> </textarea>
+                    <div class="invalid-feedback" id="invalid-feedback-description">Mô tả trống</div>
+                </div>
+                <div class="form-group">
+                    <label for="">Ảnh sản phẩm</label>
+                    <i>(Lưu ý: Nên để ảnh nền trắng)</i>
+                    <br>
+                    <button type="button" class="btn btn-info" id="btn-upload-product-img">Chọn ảnh</button>
+                    <div class="list-product-image">
+
+                    </div>
+
+                    <div class="invalid-feedback" id="invalid-feedback-image">Chưa chọn ảnh</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary btn-create-product">Save</button>
+              <button type="button" class="btn btn-primary btn-update-product">Update</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- Choose Image Modal -->
+    <div class="modal fade " id="choose-image-modal">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content ">
+            <div class="modal-header">
+              <h5 class="modal-title">Chọn ảnh</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="choose-image-button">
+                    <input type="file" name="file" id="upload-thumbnail" hidden>
+                    <label for="upload-thumbnail" class="btn btn-warning btn-upload-img" >Tải ảnh lên</label>
+
+                    <div class="choose-image">
+                        <button class="btn btn-success btn-choose-img" disabled>
+                            Chọn ảnh
+                        </button>
+                        <button class="btn btn-danger btn-delete-img" disabled>
+                            <i class="fas fa-trash-alt"></i> Xóa ảnh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="list-image">
+                    <div class="image-block" th:each = "image: ${listImage}" onclick="chooseImage(this)">
+                        <img th:src="*{'data:image/jpeg;base64,' + {image.data}}" alt="" th:data-id = "${image.id}">
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     
+
+      
+    
+    <div th:replace="fragments/admin-layout::script"></div>
+    <script th:src="@{/js/product.js}"></script>
+    <script>
+       
+    </script>
+</body>
+</html>

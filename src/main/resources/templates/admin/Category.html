@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh mục sản phẩm</title>
+    <link th:replace="fragments/admin-layout::link" />
+
+</head>
+<body>
+    <div th:replace = "fragments/admin-layout::top-bar"></div>
+    <div th:replace = "fragments/admin-layout::left-sidebar"></div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="row-page-title">
+                <ul class="list-style-none">
+                    <li class="home-link"><a th:href="@{/admin}">Home</a></li>
+                    <li class="title">Danh mục sản phẩm</li>
+                </ul>
+                <h3>Danh mục sản phẩm</h3>
+            </div>
+
+            <div class="table-body">
+                <div class="create-category-button"><button class="btn btn-success">Thêm danh mục</button></div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Tên danh mục</th>
+                                <th>Trạng thái</th>
+                                <th>Công cụ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="list-category">
+                            <tr th:each ="category,i : ${categories}">
+                                <td class="category-name" th:text = "${category.name}" th:data-id = "${category.id}">Category1</td>
+                                <td th:if = "${category.is_deleted == false}"><button class="enable-button btn btn-info"  onclick="enableCategory(this)" th:data-id = "${category.id}">Enabled</button></td>
+                                <td th:if = "${category.is_deleted == true}"><button class="enable-button btn btn-danger"  onclick="enableCategory(this)" th:data-id = "${category.id}">Deleted</button></td>
+                                <td>
+                                    <button class="update-button btn btn-primary" onclick="updateCategory(this)" th:data-id = "${category.id}">Update</button>
+                                    <button class="delete-button btn btn-danger" onclick="deleteCategory(this)" th:data-id = "${category.id}">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Input Modal -->
+<div class="modal fade" id="input-form-category" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title create-title">Thêm mới danh mục</h5>
+        <h5 class="modal-title update-title">Cập nhật danh mục</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="text" hidden id="input-category-id">
+        <label for="">Tên danh mục</label>
+        <input type="text" class="form-control" id="input-category-name" placeholder="Nhập category mới">
+        <div class="invalid-feedback" id="invalid-feedback-category">Độ dài tên category từ 1 - 300 ký tự</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-add-new-category" >Save</button>
+        <button type="button" class="btn btn-primary btn-update-category" >Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delete modal -->
+    <div class="modal fade" id="modal-delete-category"> 
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input type="text" hidden id="delete-category-id">
+              <span>Bạn chắc chắn muốn xóa category?</span>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-danger btn-delete-category">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Update Modal -->
+
+
+    <div th:replace="fragments/admin-layout::script"></div>
+
+    <script>
+
+
+
+
+        $('.create-category-button button').click(function(){
+            $('.btn-update-category').hide();
+            $('.update-title').hide();
+            $('.create-title').show();
+            $('.btn-add-new-category').show();
+            $('#input-category-name').val('');
+            $('#input-form-category').modal('show');
+            
+        })
+
+
+        function deleteCategory(btn){
+            let id = $(btn).data('id');
+            $('#delete-category-id').val(id);
+            $('#modal-delete-category').modal('show');
+        }
+
+        function updateCategory(btn){
+          $('.btn-add-new-category').hide();
+          $('.update-title').show();
+          $('.create-title').hide();
+          $('.btn-update-category').show();
+
+          let id = $(btn).data('id');
+          let name = $('.category-name[data-id = '+id+']').text();
+          $('#input-category-id').val(id);
+          $('#input-category-name').val(name);
+          $('#input-form-category').modal('show');
+        }
+
+        $('.btn-add-new-category').click(function(){
+        let newCategory = $('#input-category-name').val();
+        if (newCategory.length == 0) {
+                $('#invalid-feedback-category').show();
+                return;
+        }
+        req = {
+          name : newCategory
+        }
+        var myJSON = JSON.stringify(req);
+        $.ajax({
+          url: '/api/category/create',
+          type: 'POST',
+          data: myJSON,
+          contentType: "application/json; charset=utf-8",
+          success: function(data){
+            $('.list-category').append(`
+              <tr>
+                <td class="category-name" data-id="${data.id}">${data.name}</td>
+                <td><button class="enable-button btn btn-info">Enabled</button></td>
+                <td>
+                    <button class="update-button btn btn-primary" onclick="updateCategory(this)" data-id = "${data.id}">Update</button>
+                    <button class="delete-button btn btn-danger" onclick="deleteCategory(this)" data-id = "${data.id}">Delete</button>
+                </td>
+              </tr>
+            `);
+            $('.modal').modal('hide');
+            $('#new-category').val('');
+          },error:function(data){
+
+          }
+        })
+      })
+
+      $('.btn-delete-category').click(function(){
+        let id = $('#delete-category-id').val();
+        $.ajax({
+          url :'/api/category/delete/' +id,
+          type: 'DELETE',
+          contentType: "application/json; charset=utf-8",
+          success: function(data){
+            $('.category-name[data-id='+id+']').parent().remove();
+            $('.modal').modal('hide');
+            $('#delete-category-id').val('');
+            toastr.warning("Xóa thành công");
+
+          },error:function(data){
+            toastr.error("Lỗi khi xóa");
+
+          }
+        })
+      })
+
+
+      $('.btn-update-category').click(function(){
+        let id = $('#input-category-id').val();
+        let name = $('#input-category-name').val();
+        if (name.length == 0) {
+                $('#invalid-feedback-category').show();
+                return;
+        }
+        req = {
+          name : name
+        }
+        var myJSON = JSON.stringify(req);
+        $.ajax({
+          url: '/api/category/update/'+id,
+          type: 'PUT',
+          data: myJSON,
+          contentType: "application/json; charset=utf-8",
+          success: function(data){
+            $('.category-name[data-id='+id+']').text(name);
+            $('.modal').modal('hide');
+            $('#input-category-id').val('');
+            $('#input-category-name').val('');
+            toastr.success("Cập nhật thành công");
+
+          },error: function(data){
+            toastr.error("Cập nhật thất bại");
+          }
+        })
+      })
+
+
+      function enableCategory(btn){
+        let id = $(btn).data('id');
+        $.ajax({
+          url: '/api/category/enable/' + id,
+          type: 'POST',
+          contentType: "application/json; charset=utf-8",
+          success: function(data){
+            toastr.success("Cập nhật thành công");
+            if($(btn).hasClass('btn-info')){
+              $(btn).removeClass('btn-info');
+              $(btn).addClass('btn-danger');
+              $(btn).text("Deleted")
+            }
+            if($(btn).hasClass('btn-danger')){
+              $(btn).removeClass('btn-danger');
+              $(btn).addClass('btn-info');
+              $(btn).text("Enabled")
+            }
+          }
+        })
+      }
+    </script>
+</body>
+</html>

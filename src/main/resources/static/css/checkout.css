@@ -1,0 +1,76 @@
+
+
+.table thead th{
+    border-top: none;
+}
+
+.table td,.table th{
+    padding: .75rem 0 !important; 
+}
+
+.checkout-content .container{
+    display: grid;
+    grid-template-columns: 60% 40%;
+    padding: 40px 0;
+}
+
+
+.order-info-input,.order-detail{
+    padding: 15px;
+}
+
+.order-info-input .input-form{
+    border-top: 2px solid #ddd;
+}
+.checkout-sidebar{
+    border: 2px solid #c30005;
+}
+
+.checkout-content{
+    padding: 15px;
+}
+.input-form{
+    padding: 15px 0;
+}
+
+.checkout-content h3{
+    font-size: 1.1em;
+    overflow: hidden;
+    padding-top: 10px;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.order-info-input label{
+    font-weight: bold;
+    display: block;
+    font-size: .9em;
+    margin-bottom: 0.4em;
+    color: #222;
+}
+
+.order-detail th{
+    color: #353535;
+    font-size: .9em;
+}
+
+.order-detail tfoot td{
+    text-align: end;
+}
+
+.order-detail thead th:last-child,.order-product-totalPrice{
+    text-align: end;
+}
+
+.checkout-button button{
+    background-color: #d26e4b;
+    color: #fff;
+    border-color: rgba(0,0,0,0.05);
+    text-transform: uppercase;
+    font-size: .97em;
+    letter-spacing: .03em;
+    font-weight: bolder;
+    line-height: 2.4em;
+    min-height: 2.5em;
+    padding: 0 1.2em;
+}

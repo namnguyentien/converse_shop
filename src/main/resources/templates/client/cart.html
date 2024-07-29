@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link th:replace = "fragments/layout::link">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+</head>
+<body>
+    <header th:replace="fragments/layout::header"></header>
+    <div class="cart-content">
+        <div class="container">
+            <div class="table-product-in-cart">
+                <table class="table table-responsive w-100 d-block d-md-table">
+                    <thead >
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>SL</th>
+                            <th>Tổng</th>
+                            <th>Cập nhật</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each = "cartItem : ${cartItems}" th:data-id = "${cartItem.product.id}" class="cart-list-product" th:if = "${cart != null }">
+                                <td>
+                                    <div class="product-info">
+                                        <div class="remove-product">
+                                            <button th:data-id = "${cartItem.product.id}" onclick="deleteItem(this)">x</button>
+                                        </div>
+                                        <div class="product-image" th:each = "image,i : ${cartItem.product.images}">
+                                            <div th:if = "${i.first}"><a href="#"><img th:src="*{'data:image/jpeg;base64,' + {image.data}}" alt=""  width="64px" height="64px"></a></div>
+                                        </div>
+                                        <div class="product-name" th:text = "${cartItem.product.name}"></div>
+                                    </div>
+                                </td>
+                                <td th:text = "${cartItem.product.price}" class="product-price" th:data-id = "${cartItem.product.id}"></td>
+                                <td>
+                                    <div class="input-number-product" >
+                                        <input type="number" class="input-number" th:value = "${cartItem.quantity}" th:data-id = "${cartItem.product.id}">
+                                    </div>
+                                </td>
+                                <td th:text = "${cartItem.totalPrice}" class="product-totalPrice" th:data-id = "${cartItem.product.id}"></td>
+                                <td class="update-cart"><a href="#" th:data-id="${cartItem.product.id}" onclick="updateCart(this)" > Update</a></td>
+                            </tr>
+                            <tr th:if = "${cart != null}">
+                                <img th:src="@{/image/cartE.jpg}" alt="" style="width: 100%;" th:if = "${cartItems.isEmpty()}">   
+                            </tr>
+                            <tr th:if = "${cart == null}">
+                                <img th:src="@{/image/cartE.jpg}" alt="" style="width: 100%;">   
+                            </tr>
+                        </tbody>
+                </table>
+                <div class="continue-shopping">
+                    <a th:href="@{/}"> ← Tiếp tục xem sản phẩm </a>
+                </div>
+            </div>
+            <div class="cart-total-price">
+                
+                <div class="sub-total">
+                    <table class="table table-responsive w-100 d-block d-md-table">
+                        <thead class="thead-inverse">
+                            <tr>
+                                <th>
+                                    Tổng số lượng
+                                </th>
+                            </tr>
+                        </thead>
+                            <tbody th:if = "${cart != null}">
+                                <tr>
+                                    <td>Tổng phụ</td>
+                                    <td th:text = "${cart.totalPrices}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Ưu đãi</td>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <td>Tổng</td>
+                                    <td th:text = "${cart.totalPrices}"></td>
+                                </tr>
+                            </tbody>
+                    </table>
+                    <div class="checkout-button">
+                        <a th:href="@{/checkout}">Tiến hành thanh toán</a>
+                    </div>
+                    <div class="checkout_coupon">
+                        <div class="coupon">
+                            <input type="text" name = "coupon" class="input-coupon" placeholder = "Mã ưu đãi">
+                            <input type="submit" class="submit-coupon" value="Áp dụng">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div th:replace="fragments/layout::login-modal"></div>
+    <div th:replace = "fragments/layout::product-modal"></div>
+
+    
+    <footer th:replace="fragments/layout::footer"></footer>
+
+    <div th:replace = "fragments/layout::script"></div>
+    <script>
+        function updateCart(btn){
+            let id = $(btn).data('id');
+            let quantity = $('.cart-content .input-number[data-id = '+id+']').val();
+            let price = $('.cart-content .product-price[data-id = '+id+']').text();
+
+            req = {
+                productId : id,
+                quantity : quantity
+            }
+            var myJSON = JSON.stringify(req);
+            $.ajax({
+                url: '/client/api/update-cart',
+                type: 'PUT',
+                data: myJSON,
+                contentType: "application/json; charset=utf-8",
+                success: function(data){
+                    $('.product-totalPrice[data-id = '+id+']').text(quantity * price);
+                    toastr.success("Cập nhật thành công");
+                }
+            })
+        }
+        function deleteItem(btn){
+            let id = $(btn).data('id');
+            console.log(id);
+            $.ajax({
+                url: '/client/api/delete-item/' + id,
+                type: 'Delete',
+                contentType: "application/json; charset=utf-8",
+                success: function(data){
+                    $('.cart-list-product[data-id='+id+']').remove();
+                    toastr.success("Xóa thành công");
+                }
+            })
+        }
+
+    </script>
+</body>
+</html>

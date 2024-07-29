@@ -1,0 +1,9 @@
+.error-response{
+    padding: 20px 0;
+    margin: 40px auto;
+    text-align: center;
+    border: 1px solid rgb(238, 238, 238);
+}
+.error-response img{
+    width: 50%;
+}

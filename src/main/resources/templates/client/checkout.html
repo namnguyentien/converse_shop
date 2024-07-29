@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link th:replace = "fragments/layout::link">
+    <link rel="stylesheet" th:href="@{/css/checkout.css}">
+
+</head>
+<body>
+    <header th:replace="fragments/layout::header"></header>
+
+
+    <div class="checkout-content">
+        <div class="container">
+            <div class="order-info-input">
+                <div class="input-form">
+                    <h3>THÔNG TIN THANH TOÁN</h3>
+                    <div class="user-input-info">
+                        <div class="form-group">
+                        <label for="">Tên *</label>
+                        <input type="text" name="" id="" class="form-control name-input" placeholder=""  >
+                        </div>
+                        <div class="form-group">
+                            <label for="">Quốc gia *</label>
+                            <input type="text" name="" id="" class="form-control country-input" placeholder=""  >
+                        </div>
+                        <div class="form-group">
+                            <label for="">Địa chỉ *</label>
+                            <input type="text" name="" id="" class="form-control address-input" placeholder=""  >
+                        </div>
+                        <div class="form-group">
+                            <label for="">Email *</label>
+                            <input type="text" name="" id="" class="form-control email-input" placeholder=""  >
+                        </div>
+                        <div class="form-group">
+                            <label for="">Số điện thoại *</label>
+                            <input type="text" name="" id="" class="form-control phone-input" placeholder=""  >
+                        </div> 
+                        <div class="form-group">
+                            <label for="">Ghi chú đơn hàng(Tùy chọn)</label>
+                            <textarea type="text" name="" id="" class="form-control note-input" rows="3" ></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="order-detail">
+                <div class="checkout-sidebar">
+                    <div class="checkout-content">
+                        <h3>ĐƠN HÀNG CỦA BẠN</h3>
+                    <table class="table table-responsive w-100 d-block d-md-table" th:if = "${cart != null}">
+                        <thead >
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Tổng</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each = "item : ${cartItem}">
+                                    <td class="order-product-name" > <span th:text = "${item.product.name} + ' x' "></span> <span th:text = "${item.quantity}"></span></td>
+                                    <td class="order-product-totalPrice" th:text = "${item.totalPrice} + ' ' +₫"> </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Tổng phụ</th>
+                                    <td th:text = "${cart.totalPrices} + ' ' + ₫"></td>
+                                </tr>
+                                <tr>
+                                    <th>Ưu đãi</th>
+                                    <td>0%</td>
+                                </tr>
+                                <tr>
+                                    <th>Tổng</th>
+                                    <td th:text = "${cart.totalPrices}"></td>
+                                </tr>
+                            </tfoot>
+                    </table>
+                    <div class="checkout-button">
+                        <button>ĐẶT HÀNG</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/layout::login-modal"></div>
+    <div th:replace = "fragments/layout::product-modal"></div>
+
+
+
+    
+    <footer th:replace="fragments/layout::footer"></footer>
+
+    <div th:replace = "fragments/layout::script"></div>
+
+    <script>
+        
+        $('.checkout-button button').click(function(){
+            let name = $('.name-input').val();
+            let email = $('.email-input').val();
+            let address = $('.address-input').val();
+            let country = $('.country-input').val();
+            let phone = $('.phone-input').val();
+            let note = $('.note-input').val();
+            
+            let req = {
+                name : name,
+                email : email,
+                address: address,
+                country : country,
+                phone : phone,
+                note : note
+            }
+        
+            let myJSON = JSON.stringify(req);
+            $.ajax({
+                url: '/client/api/save-order',
+                type: 'POST',
+                data: myJSON,
+                contentType: "application/json; charset=utf-8",
+                success: function(data){
+                    toastr.success("Hoàn thành thanh toán");
+                    window.location.href = "/success";
+                },
+                statusCode:{
+                    405 : function(){
+                        toastr.error("Bạn chưa đăng nhập");
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+</html>
